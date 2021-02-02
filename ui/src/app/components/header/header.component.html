@@ -1,0 +1,23 @@
+<div>
+  <mat-toolbar>
+    <span class="header_font" font-family="Times New Roman">brainfree</span>
+    <span>
+    <img src="../../../assets/images/logo_skalliert.png" height="50" width="100"/>
+    </span>
+    <span class="example-spacer"></span>
+    <span class="example-spacer"></span>
+    <span class="example-spacer"></span>
+
+
+
+    <button mat-stroked-button class="header_font"  [matMenuTriggerFor]="menu">
+      <span class="hello"><b>Hallo</b></span> <br/>
+      <span class="fullName"><b>{{fullName}}</b></span>
+      <span class="material-icons">arrow_drop_down</span>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item (click)="openUserKeycloakAccount()">Mein Konto</button>
+      <button mat-menu-item (click)="logout()">Abmelden</button>
+    </mat-menu>
+  </mat-toolbar>
+</div>
