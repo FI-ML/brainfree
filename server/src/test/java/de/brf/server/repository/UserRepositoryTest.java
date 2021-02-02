@@ -48,9 +48,9 @@ public class UserRepositoryTest {
         entityManager.persist(randomUser);
         entityManager.flush();
 
-        User found = userRepository.findByKeyclaokId(randomUser.getKeycloakId());
+        User found = userRepository.findByKeycloakId(randomUser.getKeycloakId());
 
-        Assert.assertTrue(userRepository.findByKeyclaokId(randomUser.getKeycloakId()) != null);
+        Assert.assertTrue(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserRepositoryTest {
 
         userRepository.delete(randomUser);
 
-        Assert.assertFalse(userRepository.findByKeyclaokId(randomUser.getKeycloakId()) != null);
+        Assert.assertFalse(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
 
     }
 

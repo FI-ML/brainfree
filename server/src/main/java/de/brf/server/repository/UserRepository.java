@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository
         extends JpaRepository<User, Long> {
-    User findByKeyclaokId(String keyclaokId);
+    User findByKeycloakId(String keycloakId);
 
     User findByFirstNameAndLastName(String firstName, String lastName);
 }

@@ -27,7 +27,7 @@ public class UserService {
     }
 
     public UserDto getUserByKeycloakId(String keycloakId) {
-        User user = userRepository.findByKeyclaokId(keycloakId);
+        User user = userRepository.findByKeycloakId(keycloakId);
         return userEntityToDto(user);
     }
 
@@ -38,7 +38,7 @@ public class UserService {
 
 
         if(! isUserExists(accessToken)) {
-            return userRepository.findByKeyclaokId(accessToken.getSubject());
+            return userRepository.findByKeycloakId(accessToken.getSubject());
         }else{
             user.setFirstName(accessToken.getGivenName());
             user.setLastName(accessToken.getFamilyName());
@@ -64,6 +64,6 @@ public class UserService {
     }
 
     private boolean isUserExists(AccessToken accessToken) {
-        return  userRepository.findByKeyclaokId(accessToken.getSubject()) == null;
+        return  userRepository.findByKeycloakId(accessToken.getSubject()) == null;
     }
 }

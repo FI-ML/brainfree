@@ -1,3 +1,4 @@
 /server/target/
 /ui/ui.iml
 /brainfree.iml
+/ui/src/custom-theme.scss
