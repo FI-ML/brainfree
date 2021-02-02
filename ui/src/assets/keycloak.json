@@ -1,0 +1,10 @@
+{
+  "realm": "brainfree",
+  "auth-server-url": "http://localhost:8070/auth/",
+  "ssl-required": "none",
+  "resource": "app-frontend",
+  "public-client": true,
+  "verify-token-audience": true,
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+}

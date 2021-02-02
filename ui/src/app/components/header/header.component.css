@@ -1,0 +1,23 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+mat-toolbar{
+  font-family: bold;
+  font-size: 20px;
+  background-color:  #212432;
+}
+
+.header_font{
+  background-color: #212432;
+  border:none;
+  color:white;
+}
+
+.hello{
+  float:left;
+}
+
+
+img {
+  float: left;
+}
