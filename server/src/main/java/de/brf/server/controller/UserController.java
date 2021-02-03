@@ -2,7 +2,6 @@ package de.brf.server.controller;
 
 import de.brf.server.dto.UserDto;
 import de.brf.server.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,8 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/brainfree/", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
 
     @GetMapping(path = "user")
