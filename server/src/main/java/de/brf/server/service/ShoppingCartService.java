@@ -7,7 +7,8 @@ import de.brf.server.entity.ShoppingCart;
 import de.brf.server.repository.ProductRepository;
 import de.brf.server.repository.ShoppingCartRepository;
 import de.brf.server.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -20,14 +21,17 @@ import java.util.stream.Collectors;
  */
 
 @Service
-@AllArgsConstructor
+@NoArgsConstructor
 @Transactional
 public class ShoppingCartService {
-
-    private final ShoppingCartRepository shoppingCartRepository;
-    private final ProductService productService;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
+    @Autowired
+    private ShoppingCartRepository shoppingCartRepository;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private UserRepository userRepository;
 
 
     public List<ShoppingCartDto> getAllShoppingCartsFromUser(String keycloakId) {

@@ -4,7 +4,8 @@ import de.brf.server.dto.ProductDto;
 import de.brf.server.entity.Product;
 import de.brf.server.enums.Category;
 import de.brf.server.repository.ProductRepository;
-import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -19,12 +20,13 @@ import java.util.stream.Collectors;
 
 
 @Service
-@AllArgsConstructor
+@NoArgsConstructor
 @Transactional
 public class ProductService {
 
 
-    private final ProductRepository productRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
 
     public Optional<ProductDto> saveProduct(ProductDto productDto) {
