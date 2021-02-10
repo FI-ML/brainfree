@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Set;
 
 /**
@@ -17,10 +17,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ShoppingCartDto {
+public class CartDto {
 
     private String name;
-    Set<ProductDto> products;
-    private BigDecimal totalPrice;
-    private String keycloakId;
+    private Set<Long> productIds;
+    private Calendar createAt;
+    private Calendar updateAt;
+
 }

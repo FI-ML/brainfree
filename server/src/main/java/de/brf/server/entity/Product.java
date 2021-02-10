@@ -1,13 +1,11 @@
 package de.brf.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.brf.server.enums.Category;
 import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
@@ -38,13 +36,6 @@ public class Product {
     @Column(name = "category")
     private Category category;
 
-    @JsonIgnore
-    @ManyToMany(
-            mappedBy = "products",
-            fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
-    )
-    private List<ShoppingCart> shoppingCarts;
 
     public Product() {
     }
@@ -55,4 +46,5 @@ public class Product {
         this.price = price;
         this.category = category;
     }
+
 }

@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Set;
 
 /**
@@ -16,8 +15,8 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "shopping_carts")
-public class ShoppingCart {
+@Table(name = "carts")
+public class Cart {
 
     @Id
     @Column(name = "id")
@@ -28,27 +27,25 @@ public class ShoppingCart {
     @Column(name = "name", unique = true)
     private String name;
 
-
-    @Column(name = "toal_price")
-    private BigDecimal totalPrice;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "create_date")
-    private Date createAt;
+    private Calendar createAt;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "update_date")
-    private Date updateAt;
+    private Calendar updateAt;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+
     @JsonIgnore
     @ManyToMany(
+
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     @JoinTable(
             name = "shopping_cart_products",

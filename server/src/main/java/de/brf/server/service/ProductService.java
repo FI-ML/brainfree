@@ -9,30 +9,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @project brainfree
- *
  * @author maximilian lamm brain.free.kontakt@gmail.com
+ * @project brainfree
  */
-
 
 @Service
 @NoArgsConstructor
 @Transactional
 public class ProductService {
 
-
     @Autowired
     private ProductRepository productRepository;
 
 
-    public Optional<ProductDto> saveProduct(ProductDto productDto) {
-        Optional<Product> product = Optional.of(dtoToProduct(productDto));
+    public Optional<ProductDto> saveProduct(ProductDto dto) {
+        Optional<Product> product = Optional.of(dtoToProduct(dto));
 
-        if (productRepository.findProductByName(productDto.getName()).isEmpty()) {
+        if (productRepository.findProductByName(dto.getName()).isEmpty()) {
             return Optional.of(productToDto(productRepository.save(product.get())));
         } else {
             return Optional.empty();
@@ -40,18 +40,13 @@ public class ProductService {
     }
 
 
-    public Set<Product> saveProducts(Set<ProductDto> productDtoList) {
-        Set<Product> products = new HashSet<>();
-
-        if (productDtoList.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        for (ProductDto productDto : productDtoList) {
-            products.add(productRepository.save(dtoToProduct(productDto)));
-        }
-
-        return products;
+    public Set<ProductDto> saveProducts(Set<ProductDto> productsDto) {
+        return productsDto
+                .stream()
+                .map(this::saveProduct)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
     }
 
     public Set<ProductDto> updateProducts(Set<ProductDto> productDtoList) {
@@ -68,7 +63,7 @@ public class ProductService {
 
     }
 
-    public List<ProductDto> getAllProducts() {
+    public List<ProductDto> findAll() {
         return productRepository
                 .findAll()
                 .stream()
@@ -77,7 +72,7 @@ public class ProductService {
     }
 
 
-    public Optional<ProductDto> getProductById(Long id) {
+    public Optional<ProductDto> findById(Long id) {
 
         if (productRepository.findProductById(id).isEmpty()) {
             return Optional.empty();
@@ -102,19 +97,20 @@ public class ProductService {
     }
 
 
-    protected Product dtoToProduct(ProductDto productDto) {
+
+    protected Product dtoToProduct(ProductDto dto) {
         return new Product(
-                productDto.getName(),
-                productDto.getDescription(),
-                productDto.getPrice(),
-                checkCategory(productDto.getCategory()));
+                dto.getName(),
+                dto.getDescription(),
+                dto.getPrice(),
+                checkCategory(dto.getCategory()));
     }
 
     protected ProductDto productToDto(Product product) {
 
         return ProductDto.builder()
                 .name(product.getName())
-                .category(product.getName())
+                .category(product.getCategory().name())
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .build();

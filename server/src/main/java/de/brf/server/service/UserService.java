@@ -22,7 +22,7 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserDto getUserProfileOfLoggedUser(Authentication authentication) {
-        User user = saveUser(authentication);
+        User user = saveOrGetUser(authentication);
         return userEntityToDto(user);
     }
 
@@ -31,7 +31,7 @@ public class UserService {
         return userEntityToDto(user);
     }
 
-    protected User saveUser(Authentication authentication) {
+    protected User saveOrGetUser(Authentication authentication) {
         User user = new User();
 
         AccessToken accessToken = getAccessToken(authentication);

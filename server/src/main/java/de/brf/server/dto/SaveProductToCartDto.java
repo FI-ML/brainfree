@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
@@ -16,11 +16,10 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ProductDto {
+public class SaveProductToCartDto {
 
     private String name;
-    private BigDecimal price;
-    private String category;
-    private String description;
+    private Set<Long> productIds;
+
 
 }
