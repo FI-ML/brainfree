@@ -2,9 +2,16 @@ package de.brf.server.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Set;
 
@@ -12,36 +19,31 @@ import java.util.Set;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
-@Data
+@Builder
+@Setter(AccessLevel.PUBLIC)
+@Getter(AccessLevel.PUBLIC)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "carts")
 public class Cart {
 
     @Id
-    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Column(name = "name", unique = true)
+    @Column(unique = true)
     private String name;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "create_date")
-    private Calendar createAt;
+    private LocalDateTime createdDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "update_date")
-    private Calendar updateAt;
+    private LocalDateTime lastModifiedDate;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    @JsonIgnore
     @ManyToMany(
 
             fetch = FetchType.LAZY,

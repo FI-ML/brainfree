@@ -7,7 +7,6 @@ import lombok.Data;
  * @author Edward P. Legaspi | czetsuya@gmail.com
  * @project brainfree
  */
-
 @Data
 @Builder
 public class KeycloakAdminClientConfig {

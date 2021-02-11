@@ -1,7 +1,13 @@
 package de.brf.server.entity;
 
 import de.brf.server.enums.Category;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -11,8 +17,11 @@ import java.math.BigDecimal;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
-@Data
+@Builder
+@Setter(AccessLevel.PUBLIC)
+@Getter(AccessLevel.PUBLIC)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -35,16 +44,5 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     private Category category;
-
-
-    public Product() {
-    }
-
-    public Product(@NotNull String name, String description, BigDecimal price, Category category) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.category = category;
-    }
 
 }

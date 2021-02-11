@@ -9,7 +9,6 @@ import org.springframework.core.env.Environment;
  * @author Edward P. Legaspi | czetsuya@gmail.com
  * @project brainfree
  */
-
 @Configuration
 @PropertySource("classpath:application.properties")
 public class KeycloakPropertyReader {

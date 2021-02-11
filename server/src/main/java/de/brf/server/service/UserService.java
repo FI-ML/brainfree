@@ -3,7 +3,7 @@ package de.brf.server.service;
 import de.brf.server.dto.UserDto;
 import de.brf.server.entity.User;
 import de.brf.server.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.representations.AccessToken;
 import org.springframework.security.core.Authentication;
@@ -13,13 +13,11 @@ import org.springframework.stereotype.Service;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
-
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public UserDto getUserProfileOfLoggedUser(Authentication authentication) {
         User user = saveOrGetUser(authentication);
@@ -32,23 +30,22 @@ public class UserService {
     }
 
     protected User saveOrGetUser(Authentication authentication) {
-        User user = new User();
 
         AccessToken accessToken = getAccessToken(authentication);
 
-
-        if(! isUserExists(accessToken)) {
-            return userRepository.findByKeycloakId(accessToken.getSubject());
-        }else{
+        if (!userExists(accessToken)) {
+            User user = new User();
             user.setFirstName(accessToken.getGivenName());
             user.setLastName(accessToken.getFamilyName());
             user.setEmail(accessToken.getEmail());
             user.setKeycloakId(accessToken.getSubject());
             return userRepository.save(user);
+        } else {
+            return userRepository.findByKeycloakId(accessToken.getSubject());
         }
     }
 
-    private AccessToken getAccessToken(Authentication authentication){
+    private AccessToken getAccessToken(Authentication authentication) {
         return ((KeycloakPrincipal) authentication.getPrincipal())
                 .getKeycloakSecurityContext()
                 .getToken();
@@ -63,7 +60,7 @@ public class UserService {
                 .build();
     }
 
-    private boolean isUserExists(AccessToken accessToken) {
-        return  userRepository.findByKeycloakId(accessToken.getSubject()) == null;
+    private boolean userExists(AccessToken accessToken) {
+        return userRepository.findByKeycloakId(accessToken.getSubject()) == null;
     }
 }

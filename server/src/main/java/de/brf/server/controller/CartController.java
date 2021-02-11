@@ -7,23 +7,29 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(path = "/brainfree/")
+@RequestMapping(path = "/brainfree/carts")
 public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping(path = "cart_id/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<Object> findById(@PathVariable("id") Long id) {
         if (cartService.findById(id).isPresent()) {
             return new ResponseEntity<>(cartService.findById(id)
@@ -34,32 +40,13 @@ public class CartController {
         }
     }
 
-    @GetMapping(path = "cart_name/{name}")
-    public ResponseEntity<Object> findByName(@PathVariable("name") String name) {
-        if (cartService.findByName(name).isPresent()) {
-            return new ResponseEntity<>(cartService.findByName(name)
-                    , HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("no shopping cart could be found"
-                    , HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping(path = "create/cart")
+    @PostMapping()
     public ResponseEntity<CartDto> saveProduct(@RequestBody SaveProductToCartDto dto, Authentication authentication) {
-
-        if (cartService.saveCart(dto,authentication).isEmpty()) {
-            return new ResponseEntity<>(cartService.saveCart(dto, authentication).get(),
-                    HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(cartService.findByName(dto.getName()).get()
-                    , HttpStatus.OK);
-        }
+        return cartService.saveCart(dto, authentication).map(cart -> ResponseEntity.ok(cart)).orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping(path = "cart/{id}")
     public ResponseEntity<CartDto> updateCart(@PathVariable("id") Long id, @RequestBody SaveProductToCartDto dto) {
-
         if (cartService.updateCart(id, dto).isPresent()) {
             return new ResponseEntity(cartService.updateCart(id, dto).get()
                     , HttpStatus.OK);
@@ -71,7 +58,6 @@ public class CartController {
 
     @DeleteMapping(path = "cart/{id}")
     public ResponseEntity<Void> deleteCart(@PathVariable("id") Long id) {
-
         if (cartService.findById(id).isPresent()) {
             cartService.deleteCart(id);
             return ResponseEntity.noContent().build();

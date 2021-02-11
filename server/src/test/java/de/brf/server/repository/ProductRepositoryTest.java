@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)

@@ -1,25 +1,23 @@
 package de.brf.server.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserDto {
+
     private String keycloakId;
     private String firstName;
     private String lastName;
     private String email;
 
-    public UserDto(String keycloakId, String firstName, String lastName, String email) {
-        this.keycloakId = keycloakId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }
 }

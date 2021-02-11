@@ -1,0 +1,36 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: brainfree
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:mysql://localhost:3306/brainfreeDB?useUnicode=yes&characterEncoding=UTF-8&serverTimezone=UTC&createDatabaseIfNotExist=true
+    username: user
+    password: 'neerod321'
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+  liquibase:
+    enabled: false
+
+keycloak:
+  auth-server-url: http://localhost:8070/auth
+  ssl-required: none
+  realm: brainfree
+  resource: app-backend
+  bearer-only: true
+  confidential-port: 0
+  use-resource-role-mappings: false
+  principal-attribute: preferred_username
+  cors: true
+
+
+
+

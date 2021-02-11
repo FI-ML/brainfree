@@ -8,7 +8,6 @@
     <packaging>jar</packaging>
     <description>brainfree becomes a cloud application in which you can store your thoughts</description>
 
-
     <parent>
         <artifactId>brf</artifactId>
         <groupId>org.example</groupId>

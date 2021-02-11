@@ -36,7 +36,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
  * @author Edward P. Legaspi | czetsuya@gmail.com
  * @project brainfree
  */
-
 @KeycloakConfiguration
 @EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -53,9 +52,8 @@ public class KeycloakSecurityConfig extends KeycloakWebSecurityConfigurerAdapter
 
     /**
      * If you don't want to use the keycloak.json file, then uncomment this bean.
-     */
-    /**
-     * Use properties in application.properties instead of keycloak.json
+     *
+     * Use properties in application.yml instead of keycloak.json
      */
     @Bean
     @Primary

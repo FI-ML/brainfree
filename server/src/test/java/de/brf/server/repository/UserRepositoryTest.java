@@ -2,7 +2,6 @@ package de.brf.server.repository;
 
 import com.github.javafaker.Faker;
 import de.brf.server.entity.User;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +10,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -38,7 +39,7 @@ public class UserRepositoryTest {
 
         User found = userRepository.findByFirstNameAndLastName(randomUser.getFirstName(), randomUser.getLastName());
 
-        Assert.assertEquals(found.getFirstName(), randomUser.getFirstName());
+        assertEquals(found.getFirstName(), randomUser.getFirstName());
     }
 
     @Test
@@ -50,7 +51,7 @@ public class UserRepositoryTest {
 
         User found = userRepository.findByKeycloakId(randomUser.getKeycloakId());
 
-        Assert.assertTrue(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
+        assertNotNull(userRepository.findByKeycloakId(randomUser.getKeycloakId()));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class UserRepositoryTest {
 
         userRepository.delete(randomUser);
 
-        Assert.assertFalse(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
+        assertNull(userRepository.findByKeycloakId(randomUser.getKeycloakId()));
 
     }
 
@@ -72,13 +73,14 @@ public class UserRepositoryTest {
         String lastName = faker.name().lastName();
         String email = String.format("%s.%s@amigoscode.com", firstName, lastName);
 
-        return new User(
-                firstName,
-                lastName,
-                email,
-                new StringBuilder(firstName + lastName)
+        return User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .keycloakId(new StringBuilder(firstName + lastName)
                         .reverse()
-                        .toString()
-        );
+                        .toString())
+                .build();
     }
+
 }

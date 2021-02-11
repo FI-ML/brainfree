@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @Service
 @NoArgsConstructor
 @Transactional
@@ -30,37 +29,7 @@ public class ProductService {
 
 
     public Optional<ProductDto> saveProduct(ProductDto dto) {
-        Optional<Product> product = Optional.of(dtoToProduct(dto));
-
-        if (productRepository.findProductByName(dto.getName()).isEmpty()) {
-            return Optional.of(productToDto(productRepository.save(product.get())));
-        } else {
-            return Optional.empty();
-        }
-    }
-
-
-    public Set<ProductDto> saveProducts(Set<ProductDto> productsDto) {
-        return productsDto
-                .stream()
-                .map(this::saveProduct)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-    }
-
-    public Set<ProductDto> updateProducts(Set<ProductDto> productDtoList) {
-        if (!productDtoList.isEmpty()) {
-            return Collections.emptySet();
-        }
-
-        return productDtoList
-                .stream()
-                .map(this::saveProduct)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toSet());
-
+        return productRepository.findByName(dto.getName()).map(product -> productRepository.save(dtoToProduct(dto)));
     }
 
     public List<ProductDto> findAll() {
@@ -71,43 +40,25 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-
     public Optional<ProductDto> findById(Long id) {
-
-        if (productRepository.findProductById(id).isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                productToDto(
-                        productRepository.findProductById(id).get()
-                ));
+        return productRepository.findById(id).map(this::productToDto);
     }
 
 
-    public Optional<ProductDto> findProductByName(String productName) {
-        if (productRepository.findProductByName(productName).isEmpty()) {
-            return Optional.empty();
-        }
-
-        return Optional.of(
-                productToDto(
-                        productRepository.findProductByName(productName).get()
-                ));
+    public Optional<ProductDto> findProductByName(String name) {
+        return productRepository.findByName(name).map(this::productToDto);
     }
-
-
 
     protected Product dtoToProduct(ProductDto dto) {
-        return new Product(
-                dto.getName(),
-                dto.getDescription(),
-                dto.getPrice(),
-                checkCategory(dto.getCategory()));
+        return Product.builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .price(dto.getPrice())
+                .category(checkCategory(dto.getCategory()))
+                .build();
     }
 
     protected ProductDto productToDto(Product product) {
-
         return ProductDto.builder()
                 .name(product.getName())
                 .category(product.getCategory().name())
@@ -115,7 +66,6 @@ public class ProductService {
                 .description(product.getDescription())
                 .build();
     }
-
 
     private Category checkCategory(String pCategory) {
         return Category.valueOf(pCategory);

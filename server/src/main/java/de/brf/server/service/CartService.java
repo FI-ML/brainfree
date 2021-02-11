@@ -6,11 +6,13 @@ import de.brf.server.entity.Cart;
 import de.brf.server.entity.Product;
 import de.brf.server.repository.CartRepository;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,21 +23,17 @@ import java.util.stream.Collectors;
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @Service
-@NoArgsConstructor
 @Transactional
+@RequiredArgsConstructor
 public class CartService {
 
-    @Autowired
-    private ProductService productService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CartRepository cartRepository;
+    private final ProductService productService;
+    private final UserService userService;
+    private final CartRepository cartRepository;
 
     public Optional<CartDto> findById(Long id) {
-        return cartRepository.findShoppingCartById(id)
+        return cartRepository.findById(id)
                 .map(this::cartToDto);
     }
 
@@ -46,7 +44,7 @@ public class CartService {
 
         if (cartRepository.findByName(dto.getName()).isEmpty()) {
             cart.setName(dto.getName());
-            cart.setCreateAt(Calendar.getInstance());
+            cart.setCreatedDate(LocalDateTime.now());
             cart.setUser(userService.saveOrGetUser(authentication));
             cart.setProducts(extractProductFrom(dto.getProductIds()));
         }
@@ -63,13 +61,13 @@ public class CartService {
 
     public Optional<CartDto> updateCart(Long id, SaveProductToCartDto dto) {
 
-        if (cartRepository.findShoppingCartById(id).isEmpty()) {
+        if (cartRepository.findById(id).isEmpty()) {
             return Optional.empty();
         }
 
-        Optional<Cart> cart = cartRepository.findShoppingCartById(id);
+        Optional<Cart> cart = cartRepository.findById(id);
         cart.get().setName(dto.getName());
-        cart.get().setUpdateAt(Calendar.getInstance());
+        cart.get().setLastModifiedDate(LocalDateTime.now());
         cart.get().setProducts(extractProductFrom(dto.getProductIds()));
 
         return Optional.of(
@@ -78,9 +76,7 @@ public class CartService {
     }
 
     public void deleteCart(Long id) {
-        if (cartRepository.findShoppingCartById(id).isPresent()) {
-            cartRepository.deleteShoppingCartById(id);
-        }
+        cartRepository.findById(id).ifPresent(cartRepository::delete);
     }
 
     private Set<Product> extractProductFrom(Set<Long> productIds) {
@@ -102,8 +98,8 @@ public class CartService {
         return CartDto.builder()
                 .name(cart.getName())
                 .productIds(ids)
-                .createAt(cart.getCreateAt())
-                .createAt(cart.getUpdateAt())
+                .createAt(cart.getCreatedDate())
+                .createAt(cart.getLastModifiedDate())
                 .build();
     }
 

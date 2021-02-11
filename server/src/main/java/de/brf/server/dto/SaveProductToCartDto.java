@@ -21,5 +21,4 @@ public class SaveProductToCartDto {
     private String name;
     private Set<Long> productIds;
 
-
 }

@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,7 +20,7 @@ public class CartDto {
 
     private String name;
     private Set<Long> productIds;
-    private Calendar createAt;
-    private Calendar updateAt;
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
 
 }
