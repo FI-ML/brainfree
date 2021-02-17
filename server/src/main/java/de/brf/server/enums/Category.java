@@ -1,4 +1,6 @@
-package de.brf.server.enums;/**
+package de.brf.server.enums;
+
+/**
  * @project brainfree
  *
  * @author maximilian lamm brain.free.kontakt@gmail.com
@@ -14,4 +16,5 @@ public enum Category {
     BEAUTY,
     COMPUTER_AND_ACCESSORIES,
     BOOKS;
+
 }

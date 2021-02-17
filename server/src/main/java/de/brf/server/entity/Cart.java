@@ -1,12 +1,9 @@
 package de.brf.server.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -14,41 +11,36 @@ import java.util.Set;
  * @project brainfree
  */
 
-@Data
+@Builder
+@Setter(AccessLevel.PUBLIC)
+@Getter(AccessLevel.PUBLIC)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name = "shopping_carts")
-public class ShoppingCart {
+@Table(name = "carts")
+public class Cart {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Column(name = "name", unique = true)
+    @Column(unique = true)
     private String name;
 
+    private LocalDateTime createdDate;
 
-    @Column(name = "toal_price")
-    private BigDecimal totalPrice;
+    private LocalDateTime lastModifiedDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "create_date")
-    private Date createAt;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    @Column(name = "update_date")
-    private Date updateAt;
-
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
+
     @ManyToMany(
+
             fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL
+            cascade = CascadeType.PERSIST
     )
     @JoinTable(
             name = "shopping_cart_products",

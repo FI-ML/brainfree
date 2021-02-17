@@ -1,5 +1,5 @@
-/server/target/
-/ui/ui.iml
-/brainfree.iml
-/ui/src/custom-theme.scss
-/.idea/
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr

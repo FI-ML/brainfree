@@ -2,7 +2,6 @@ package de.brf.server.repository;
 
 import com.github.javafaker.Faker;
 import de.brf.server.entity.User;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +10,17 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
  * @project brainfree
  */
 
-
 @RunWith(SpringRunner.class)
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserRepositoryTest {
+class UserRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -29,16 +29,16 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    public void findByName() {
+    public void findByUUID() {
 
         User randomUser = getRandomUser();
 
         entityManager.persist(randomUser);
         entityManager.flush();
 
-        User found = userRepository.findByFirstNameAndLastName(randomUser.getFirstName(), randomUser.getLastName());
+        User found = userRepository.findByUUID(randomUser.getUUID());
 
-        Assert.assertEquals(found.getFirstName(), randomUser.getFirstName());
+        assertEquals(found.getUUID(), randomUser.getUUID());
     }
 
     @Test
@@ -48,9 +48,9 @@ public class UserRepositoryTest {
         entityManager.persist(randomUser);
         entityManager.flush();
 
-        User found = userRepository.findByKeycloakId(randomUser.getKeycloakId());
+        User found = userRepository.findByUUID(randomUser.getUUID());
 
-        Assert.assertTrue(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
+        assertNotNull(userRepository.findByUUID(randomUser.getUUID()));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserRepositoryTest {
 
         userRepository.delete(randomUser);
 
-        Assert.assertFalse(userRepository.findByKeycloakId(randomUser.getKeycloakId()) != null);
+        assertNull(userRepository.findByUUID(randomUser.getUUID()));
 
     }
 
@@ -72,13 +72,13 @@ public class UserRepositoryTest {
         String lastName = faker.name().lastName();
         String email = String.format("%s.%s@amigoscode.com", firstName, lastName);
 
-        return new User(
-                firstName,
-                lastName,
-                email,
-                new StringBuilder(firstName + lastName)
+        return User.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
+                .UUID(new StringBuilder(firstName + lastName)
                         .reverse()
-                        .toString()
-        );
+                        .toString())
+                .build();
     }
 }

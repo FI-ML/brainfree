@@ -1,4 +1,4 @@
-# brainfree
+## brainfree
 
 Requirements:
 
@@ -9,7 +9,7 @@ Requirements:
 - MySql
 - Docker
 
-# What is brainfree?
+## What is brainfree?
 
 I was looking for a project that would allow me to familiarize myself with the technologies listed and expand my knowledge. It was also important to me that it should have a real function for me. And since cloud is on everyone's lips, my application must also run in the cloud later on.
 
@@ -23,7 +23,7 @@ As soon as this step is reached, a drag-and-drop function shall be implemented. 
 
 More on this later...
 
-# Why did I choose this technology stack?
+## Why did I choose this technology stack?
 
 Java and Spring are a lot of fun for me and I find Java very versatile. Angular is the first web framework I came in contact with. In the beginning, I found it hard to learn. In the meantime I changed my mind and now I know the advantages of creating a nice user interface.
 
@@ -31,26 +31,23 @@ I got to know Keycloak through my last employer. And since I wanted to know how 
 
 If you have any criticism or suggestions, or even if you find a bug, I would be happy to hear from you.
 
-# Tests
+## Tests
 
 - JUnit  
 - Postman
 
-# Contact
+## Contact
 
 - brain.free.kontakt@gmail.com
 - https://www.xing.com/profile/Maximilian_Lamm5/cv
 
-THANKS
+## THANKS
 
 - https://github.com/czetsuya
 - https://github.com/JohnChangUK
 
-References
+## References
 
 - https://www.keycloak.org/
 - https://cli.angular.io/
 - https://hub.docker.com/r/jboss/keycloak
-
-
-

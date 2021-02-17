@@ -3,11 +3,13 @@ package de.brf.server.service;
 import de.brf.server.dto.UserDto;
 import de.brf.server.entity.User;
 import de.brf.server.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.representations.AccessToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * @author maximilian lamm brain.free.kontakt@gmail.com
@@ -15,36 +17,32 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
 
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserDto getUserProfileOfLoggedUser(Authentication authentication) {
-        User user = saveUser(authentication);
-        return userEntityToDto(user);
+    public User getUserProfileOfLoggedUser(Authentication authentication) {
+        User user = saveOrGetUser(authentication);
+        return user;
     }
 
-    public UserDto getUserByKeycloakId(String keycloakId) {
-        User user = userRepository.findByKeycloakId(keycloakId);
-        return userEntityToDto(user);
+    public User findByUUID(Authentication authentication) {
+        return userRepository.findByUUID(getAccessToken(authentication).getSubject());
     }
 
-    protected User saveUser(Authentication authentication) {
-        User user = new User();
+    protected User saveOrGetUser(Authentication authentication) {
+        AccessToken accessToken =getAccessToken(authentication);
+        Optional<User> user = Optional.of(userRepository.findByUUID(accessToken.getSubject()));
 
-        AccessToken accessToken = getAccessToken(authentication);
-
-
-        if(! isUserExists(accessToken)) {
-            return userRepository.findByKeycloakId(accessToken.getSubject());
+        if(user.isPresent()) {
+            return user.get();
         }else{
-            user.setFirstName(accessToken.getGivenName());
-            user.setLastName(accessToken.getFamilyName());
-            user.setEmail(accessToken.getEmail());
-            user.setKeycloakId(accessToken.getSubject());
-            return userRepository.save(user);
+            user.get().setFirstName(accessToken.getGivenName());
+            user.get().setLastName(accessToken.getFamilyName());
+            user.get().setEmail(accessToken.getEmail());
+            return userRepository.save(user.get());
         }
     }
 
@@ -54,16 +52,11 @@ public class UserService {
                 .getToken();
     }
 
-    private UserDto userEntityToDto(User user) {
+    public UserDto userToDto(User user) {
         return UserDto.builder()
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .keycloakId(user.getKeycloakId())
                 .build();
-    }
-
-    private boolean isUserExists(AccessToken accessToken) {
-        return  userRepository.findByKeycloakId(accessToken.getSubject()) == null;
     }
 }

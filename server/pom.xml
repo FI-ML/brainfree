@@ -8,7 +8,6 @@
     <packaging>jar</packaging>
     <description>brainfree becomes a cloud application in which you can store your thoughts</description>
 
-
     <parent>
         <artifactId>brf</artifactId>
         <groupId>org.example</groupId>
@@ -71,6 +70,11 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>20.0</version>
         </dependency>
         <dependency>
             <groupId>com.github.javafaker</groupId>

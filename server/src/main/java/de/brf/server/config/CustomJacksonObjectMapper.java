@@ -17,4 +17,5 @@ public class CustomJacksonObjectMapper extends ObjectMapper {
         configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
+
 }
