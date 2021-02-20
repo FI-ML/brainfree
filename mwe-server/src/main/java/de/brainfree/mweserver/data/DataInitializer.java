@@ -1,6 +1,7 @@
 package de.brainfree.mweserver.data;
 
 import de.brainfree.mweserver.data.model.Cart;
+import de.brainfree.mweserver.data.model.CartItem;
 import de.brainfree.mweserver.data.model.Product;
 import de.brainfree.mweserver.data.repo.ProductRepository;
 import de.brainfree.mweserver.service.CartService;
@@ -11,9 +12,12 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -28,21 +32,26 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
         log.info("DataInitializer start ...");
         initProducts();
         log.info("Products init done ...");
-        createCart();
-        log.info("Created first cart ...");
+        createCart("thomas.maier", Arrays.asList("Tastatur", "Stift", "Handy"));
+        createCart("john.doe", Arrays.asList("Fernseher", "Stift"));
+        log.info("Created 2 carts ...");
     }
 
-    private void createCart() {
-        String username = "thomas.maier";
+    private void createCart(String username, List<String> productNames) {
         Cart cart = new Cart();
         cart.setUsername(username);
 
         Set<Product> products = new HashSet<>();
-        getProductByName("Tastatur").ifPresent(products::add);
-        getProductByName("Handy").ifPresent(products::add);
-        cart.updateProducts(products);
+        productNames.forEach(p -> getProductByName(p).ifPresent(products::add));
 
-        cartService.update(cart);
+        Set<CartItem> items = products.stream()
+                .map(p -> CartItem.builder()
+                        .product(p)
+                        .quantity(1)
+                        .build())
+                .collect(Collectors.toSet());
+
+        cartService.create(cart, items);
     }
 
     private void initProducts() {
@@ -55,6 +64,11 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
                 .name("Fernseher")
                 .text("Text zu Fernseher")
                 .price(BigDecimal.valueOf(488.99))
+                .build());
+        productRepository.save(Product.builder()
+                .name("Stift")
+                .text("Text zu Stift")
+                .price(BigDecimal.valueOf(2.99))
                 .build());
         productRepository.save(Product.builder()
                 .name("Handy")

@@ -1,17 +1,19 @@
 package de.brainfree.mweserver.data.model;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,6 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class Cart {
 
     @Id
@@ -33,16 +36,18 @@ public class Cart {
     @Column(nullable = false, updatable = false, unique = true)
     private String username;
 
-    @OneToMany(orphanRemoval = true)
-    @Setter(AccessLevel.NONE) // man kann dann nicht einfach "setProducts()" aufrufen sondern muss updateProducts() nehmen
-    private Set<Product> products;
+    // @Setter(AccessLevel.NONE)
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id")
+    private Set<CartItem> items;
 
-    public Cart updateProducts(Set<Product> updates) {
-        if (this.products == null) {
-            this.products = new HashSet<>();
+    public Cart updateItems(Set<CartItem> updates) {
+        if (this.items == null) {
+            this.items = new HashSet<>();
         }
-        this.products.clear();
-        this.products.addAll(updates);
+        this.items.clear();
+        //updates.forEach(update -> update.setCart(this));
+        this.items.addAll(updates);
         return this; // das hier mache ich damit man direkt weiter arbeiten kann mit dem Cart und ihn nicht zwischenspeichern muss
     }
 

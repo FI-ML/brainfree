@@ -1,5 +1,6 @@
 package de.brainfree.mweserver.controller;
 
+import de.brainfree.mweserver.data.model.Cart;
 import de.brainfree.mweserver.dto.CartReadDTO;
 import de.brainfree.mweserver.dto.CartWriteDTO;
 import de.brainfree.mweserver.mapping.CartMapper;
@@ -27,9 +28,7 @@ public class CartController {
 
     @GetMapping("/{username}")
     public ResponseEntity<CartReadDTO> getById(@PathVariable String username) {
-        return cartService.getByUsername(username)
-                .map(cart -> ResponseEntity.ok(cartMapper.cartToDto(cart)))
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.getByUsername(username)));
     }
 
     /**
@@ -37,12 +36,12 @@ public class CartController {
      * Man muss dann nicht irgendwie klären ob da was hinzugefügt oder gelöscht wurde
      *
      * @param username
-     * @param cart
+     * @param cartDto
      * @return
      */
     @PutMapping("/{username}")
-    public ResponseEntity<CartReadDTO> update(@PathVariable String username, @RequestBody CartWriteDTO cart) {
-        return ResponseEntity.ok(cartMapper.cartToDto(cartService.update(cartMapper.cartToEntity(username, cart))));
+    public ResponseEntity<CartReadDTO> update(@PathVariable String username, @RequestBody CartWriteDTO cartDto) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.update(username, cartDto)));
     }
 
 }

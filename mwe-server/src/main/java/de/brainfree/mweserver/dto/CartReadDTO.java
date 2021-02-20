@@ -12,8 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CartReadDTO {
 
-    Long id;
-    List<ProductDTO> products;
+    List<CartItemReadDTO> items;
     BigDecimal priceSum; // das hier muss man ja nicht in der DB speichern, das kann man ja dynamisch berechnen und dann ans Frontend schicken
 
 }
