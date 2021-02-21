@@ -2,6 +2,7 @@ package de.brainfree.mweserver.service;
 
 import de.brainfree.mweserver.data.model.Product;
 import de.brainfree.mweserver.data.repo.ProductRepository;
+import de.brainfree.mweserver.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,14 @@ public class ProductService {
         return productRepository.findAll().stream()
                 .sorted(Comparator.comparing(Product::getName))
                 .collect(Collectors.toList());
+    }
+
+    public Product createProduct(ProductDTO productDto) {
+        return productRepository.save(Product.builder()
+                .name(productDto.getName())
+                .text(productDto.getText())
+                .price(productDto.getPrice())
+                .build());
     }
 
 }

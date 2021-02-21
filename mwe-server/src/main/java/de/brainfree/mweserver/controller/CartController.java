@@ -1,23 +1,24 @@
 package de.brainfree.mweserver.controller;
 
-import de.brainfree.mweserver.data.model.Cart;
-import de.brainfree.mweserver.dto.CartReadDTO;
-import de.brainfree.mweserver.dto.CartWriteDTO;
+import de.brainfree.mweserver.dto.CartItemRequestDTO;
+import de.brainfree.mweserver.dto.CartRequestDTO;
+import de.brainfree.mweserver.dto.CartResponseDTO;
+import de.brainfree.mweserver.exception.NotYetImplementedException;
 import de.brainfree.mweserver.mapping.CartMapper;
 import de.brainfree.mweserver.service.CartService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Hier alle Aktionen die mit einem Cart zu tun haben
- * Im Frontend brauchst du dafür den username (halt den eingeloggten User sein username) und alle Produkte, damit man die IDs hier ans Backend schicken kann
- */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/carts")
@@ -26,22 +27,47 @@ public class CartController {
     private final CartMapper cartMapper;
     private final CartService cartService;
 
-    @GetMapping("/{username}")
-    public ResponseEntity<CartReadDTO> getById(@PathVariable String username) {
-        return ResponseEntity.ok(cartMapper.cartToDto(cartService.getByUsername(username)));
+    @GetMapping("/{cartId}")
+    @ApiOperation(value = "Get cart by id", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> getById(@PathVariable Long cartId) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.getById(cartId)));
     }
 
-    /**
-     * Nur eine update Methode hat den Vorteil: man kann einfach immer alle Produkte vom Frontend ans Backend schicken
-     * Man muss dann nicht irgendwie klären ob da was hinzugefügt oder gelöscht wurde
-     *
-     * @param username
-     * @param cartDto
-     * @return
-     */
-    @PutMapping("/{username}")
-    public ResponseEntity<CartReadDTO> update(@PathVariable String username, @RequestBody CartWriteDTO cartDto) {
-        return ResponseEntity.ok(cartMapper.cartToDto(cartService.update(username, cartDto)));
+    @PostMapping
+    @ApiOperation(value = "Create cart", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> create(@RequestBody CartRequestDTO cartDto) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.create(cartDto)));
+    }
+
+    @PutMapping("/{cartId}")
+    @ApiOperation(value = "Update cart with id", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> update(@PathVariable Long cartId, @RequestBody CartRequestDTO cartDto) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.update(cartId, cartDto)));
+    }
+
+    @DeleteMapping("/{cartId}")
+    @ApiOperation(value = "Delete cart with id")
+    public ResponseEntity<Void> delete(@PathVariable Long cartId) {
+        cartService.delete(cartId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{cartId}/items")
+    @ApiOperation(value = "Add item to cart with id", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> addItem(@PathVariable Long cartId, @RequestBody CartItemRequestDTO itemDto) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.addItem(cartId, itemDto)));
+    }
+
+    @PutMapping("/{cartId}/items/{itemId}")
+    @ApiOperation(value = "Update item in cart with id", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> updateItem(@PathVariable Long cartId, @PathVariable Long itemId, @RequestBody CartItemRequestDTO itemDto) {
+        throw new NotYetImplementedException(String.format("update items with id %s on cart with id %s", itemId, cartId));
+    }
+
+    @DeleteMapping("/{cartId}/items/{itemId}")
+    @ApiOperation(value = "Remove item from cart with id", response = CartResponseDTO.class)
+    public ResponseEntity<CartResponseDTO> removeItem(@PathVariable Long cartId, @PathVariable Long itemId) {
+        return ResponseEntity.ok(cartMapper.cartToDto(cartService.removeItem(cartId, itemId)));
     }
 
 }

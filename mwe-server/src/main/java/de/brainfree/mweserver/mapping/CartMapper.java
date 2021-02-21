@@ -2,18 +2,15 @@ package de.brainfree.mweserver.mapping;
 
 import de.brainfree.mweserver.data.model.Cart;
 import de.brainfree.mweserver.data.model.CartItem;
-import de.brainfree.mweserver.dto.CartItemReadDTO;
-import de.brainfree.mweserver.dto.CartReadDTO;
-import de.brainfree.mweserver.dto.CartWriteDTO;
+import de.brainfree.mweserver.dto.CartItemResponseDTO;
+import de.brainfree.mweserver.dto.CartResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,21 +24,22 @@ public class CartMapper {
 
     private final CartItemMapper cartItemMapper;
 
-    public CartReadDTO cartToDto(Cart cart) {
-        List<CartItemReadDTO> items = cart.getItems().stream()
+    public CartResponseDTO cartToDto(Cart cart) {
+        List<CartItemResponseDTO> items = cart.getItems().stream()
                 .map(cartItemMapper::toDto)
                 .collect(Collectors.toList()).stream()
-                .sorted(Comparator.comparing(CartItemReadDTO::getProductName))
+                .sorted(Comparator.comparing(CartItemResponseDTO::getProductName))
                 .collect(Collectors.toList());
 
-        return CartReadDTO.builder()
+        return CartResponseDTO.builder()
+                .name(cart.getName())
+                .username(cart.getUsername())
                 .items(items)
                 .priceSum(priceSum(cart.getItems()))
                 .build();
     }
 
     private BigDecimal priceSum(Collection<CartItem> items) {
-        //return BigDecimal.TEN;
         return items.stream().map(item -> item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

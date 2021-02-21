@@ -1,9 +1,10 @@
 package de.brainfree.mweserver.data;
 
 import de.brainfree.mweserver.data.model.Cart;
-import de.brainfree.mweserver.data.model.CartItem;
 import de.brainfree.mweserver.data.model.Product;
 import de.brainfree.mweserver.data.repo.ProductRepository;
+import de.brainfree.mweserver.dto.CartItemRequestDTO;
+import de.brainfree.mweserver.dto.CartRequestDTO;
 import de.brainfree.mweserver.service.CartService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,20 +39,24 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void createCart(String username, List<String> productNames) {
-        Cart cart = new Cart();
-        cart.setUsername(username);
-
         Set<Product> products = new HashSet<>();
         productNames.forEach(p -> getProductByName(p).ifPresent(products::add));
 
-        Set<CartItem> items = products.stream()
-                .map(p -> CartItem.builder()
-                        .product(p)
+        CartRequestDTO cartRequestDTO = CartRequestDTO.builder()
+                .name("Amazon Warenkorb")
+                .username(username)
+                .build();
+
+        Cart created = cartService.create(cartRequestDTO);
+
+        products.stream()
+                .map(p -> CartItemRequestDTO.builder()
+                        .productId(p.getId())
                         .quantity(1)
                         .build())
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet())
+                .forEach(item -> cartService.addItem(created.getId(), item));
 
-        cartService.create(cart, items);
     }
 
     private void initProducts() {
